@@ -1,7 +1,7 @@
-import { useState } from "react"
-import IngredientsList from "./components/IngredientsList"
-import ClaudeRecipe from "./components/ClaudeRecipe"
-import { getRecipeFromMistral } from "./ai"
+import React, { useState } from "react"
+import IngredientsList from "./IngredientsList"
+import ClaudeRecipe from "./ClaudeRecipe"
+import { getRecipeFromMistral } from "../ai"
 
 export default function Main() {
     const [ingredients, setIngredients] = useState(
@@ -9,6 +9,13 @@ export default function Main() {
     )
     const [recipe, setRecipe] = useState("")
     const [loading, setLoading] = useState(false) 
+    const recipeSection = React.useRef(null)
+
+    React.useEffect(() => {
+        if (loading && recipeSection.current !== null) {
+            recipeSection.current.scrollIntoView({behavior: "smooth"})
+        }
+    }, [loading])
 
     async function getRecipe() {
         setLoading(true)
@@ -45,6 +52,7 @@ export default function Main() {
 
             {ingredients.length > 0 &&
                 <IngredientsList
+                    ref={recipeSection}
                     ingredients={ingredients}
                     getRecipe={getRecipe}
                 />
